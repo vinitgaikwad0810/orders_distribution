@@ -34,3 +34,33 @@
   {
     "order_date": "1/18/2015",
     "order_number": "20150118000001",
+    "order_items": [
+      {
+        "order_item_id": 5,
+        "type": "Real Property Recording",
+        "pages": 5
+      },
+      {
+        "order_item_id": 6,
+        "type": "Birth Certificate",
+        "pages": 1
+      }
+    ]
+  },
+  {
+    "order_date": "1/23/2015",
+    "order_number": "20150123000001",
+    "order_items": [
+      {
+        "order_item_id": 7,
+        "type": "Birth Certificate",
+        "pages": 1
+      },
+      {
+        "order_item_id": 8,
+        "type": "Birth Certificate",
+        "pages": 1
+      }
+    ]
+  }
+]
