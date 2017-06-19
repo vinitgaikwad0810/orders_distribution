@@ -42,12 +42,20 @@ var promiseFees = new Promise(function(resolve, reject) {
 
 promiseOrders.then(function(orders) {
 //  console.log(result); // "Stuff worked!"
-   
+   	   var orders_prices = {};
+   	   var orders_fund = {};
    
 
 	   promiseFees.then(function(feesResult) {
         
-	   printPart1(orders, fees)   
+	   orders_prices = printPart1(orders, fees) 
+
+	   console.log(orders_prices.orders[0].order_items);  
+
+	   orders_fund = printPart2(orders_prices,fees)
+
+	   console.log(orders_fund.orders[0].funds); 
+
 	}, function(err) {
 	  console.log(err); // Error: "It broke"
 	});
@@ -64,33 +72,98 @@ function printPart1(orders,fees){
 
 	var item = {};
 	var total = 0;
+	var orders_prices = {};
+	orders_prices.orders = [];
 
 	for(var i=0 ; i < orders.length ; i++){
+
+		var order = {};
 		
 		total = 0;
 		console.log("Order ID: " + orders[i].order_number)
 
+		order.order_number = orders[i].order_number;
+
+		order.order_items = [];
+
+		
+
 		for(var j =0 ; j < orders[i].order_items.length; j++)
 		{
-		
+			
 			//console.log(orders[i].order_items[j]);
 			feeItem = findItemInFees(fees,orders[i].order_items[j].type);
 		//	console.log(feeItem);
 			price = calculate(feeItem,orders[i].order_items[j].pages);
+
+
 			console.log("Orders item ("+(j+1)+") "+ orders[i].order_items[j].type +" : "+ price)
 			total = total + parseFloat(price);
 
+			var order_item = {};
+			order_item.type = orders[i].order_items[j].type;
+			order_item.price = price;
 
+
+			order.order_items[order.order_items.length] = order_item;
 		}
+		order.total = total;
 
-
+		orders_prices.orders[orders_prices.orders.length] = order;
 
 		console.log("Order Total: "+ total);
 		console.log("             ");							
 	}
 
 
+	return orders_prices;
 
+}
+
+function printPart2(orders_prices,fees){
+
+	//console.log(orders_prices);	
+	var orders_fund = {};
+
+	orders_fund.orders = [];
+
+	for(var i=0; i<orders_prices.orders.length ;i++) {
+
+		var order = {}
+
+		order.order_number = orders_prices.orders[i].order_number;
+
+		order.funds = [];
+
+		for(var j=0; j<orders_prices.orders[i].order_items.length ; j++) {
+
+		
+		feeItem = findItemInFees(fees,orders_prices.orders[i].order_items[j].type);
+
+
+			for(var k =0 ; k < feeItem.distributions.length ; k++){
+
+				var fund = {};
+
+
+				fund.fund_name = feeItem.distributions[k].name;
+
+				fund.amount = feeItem.distributions[k].amount;
+				
+				order.funds[order.funds.length] = fund ;
+			}
+
+
+
+		}
+
+		orders_fund.orders[orders_fund.orders.length] = order
+
+	//console.log(order);	
+
+	}
+
+	return orders_fund;
 
 }
 
